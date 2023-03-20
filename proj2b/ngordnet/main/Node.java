@@ -23,4 +23,7 @@ public class Node {
     public Set<String> getWords() {
         return words;
     }
+    public Boolean contains(String word) {
+        return words.contains(word);
+    }
 }
