@@ -19,10 +19,7 @@ public class WordNetGraph {
             String line1 = hypo.readLine();
             if (line1 != null) {
                 String[] line = line1.split(",");
-                Node node = wg.getNode(Integer.parseInt(line[0]));
-                for (int i = 1; i < line.length; i++) {
-                    node.addChild(wg.getNode(Integer.parseInt(line[i])));
-                }
+                wg.addEdge(line);
             }
         }
     }
