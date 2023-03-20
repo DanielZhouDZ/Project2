@@ -1,13 +1,10 @@
 package ngordnet.main;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Set;
-import java.util.HashSet;
+import java.util.*;
 
 public class WordGraph {
     private int size;
-    private List<String[]> words;
+    private List<List<String>> words;
     private List<List<Integer>> adjacencyList;
     private Set<Integer> roots;
     public WordGraph() {
@@ -17,7 +14,7 @@ public class WordGraph {
     }
     public void addNode(String[] words) {
         roots.add(size);
-        this.words.add(words);
+        this.words.add(new ArrayList<>(Arrays.asList(words)));
         adjacencyList.add(new ArrayList<>());
         size += 1;
     }
@@ -28,7 +25,7 @@ public class WordGraph {
             roots.remove(Integer.parseInt(edges[i]));
         }
     }
-    public String[] getWords(int index) {
+    public List<String> getWords(int index) {
         return words.get(index);
     }
     public List<Integer> getEdges(int index) {

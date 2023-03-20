@@ -29,6 +29,29 @@ public class HyponymsHandler extends NgordnetQueryHandler{
         return outputWords.toString();
     }
     public List<String> handleWords(int index, List<String> words) {
-
+        if (words.size() == 1 && wg.getWords(index).contains(words.get(0))) {
+            return getAll(index);
+        }
+        List<String> newWords = new ArrayList<>();
+        for (String w : words) {
+            if (!wg.getWords(index).contains(w)) {
+                newWords.add(w);
+            }
+        }
+        if (newWords.size() == 0) {
+            return getAll(index);
+        }
+        List<String> output = new ArrayList<>();
+        for (int i : wg.getEdges(index)) {
+            output.addAll(handleWords(i, newWords));
+        }
+        return output;
+    }
+    public List<String> getAll(int index) {
+        List<String> output = new ArrayList<>(wg.getWords(index));
+        for (int i : wg.getEdges(index)) {
+            output.addAll(getAll(i));
+        }
+        return output;
     }
 }
