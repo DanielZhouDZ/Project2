@@ -22,7 +22,9 @@ public class HyponymsHandler extends NgordnetQueryHandler{
         List<Node> nodes = wg.getNodes();
         Set<String> output = new HashSet<>();
         for (Node n : nodes) {
-            output.addAll(addNodes(n, words));
+            if (!n.visited) {
+                output.addAll(addNodes(n, words));
+            }
         }
         List<String> outputWords = new ArrayList<>(output);
         Collections.sort(outputWords);
@@ -32,7 +34,17 @@ public class HyponymsHandler extends NgordnetQueryHandler{
         if (words.size() == 1 && n.contains(words.get(0))) {
             return addNodes(n);
         }
-        return new HashSet<>();
+        List<String> newWords = new ArrayList<>(words);
+        Set<String> output = new HashSet<>();
+        for (String word : words) {
+            if (n.contains(word)) {
+                newWords.remove(word);
+            }
+        }
+        for (Node node : n.getChildren()) {
+            output.addAll(addNodes(node, newWords));
+        }
+        return output;
     }
     public Set<String> addNodes(Node node) {
         Set<String> output = new HashSet<>(node.getWords());
