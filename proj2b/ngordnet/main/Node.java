@@ -9,10 +9,12 @@ import java.util.Collections;
 public class Node {
     private Set<String> words;
     private List<Node> children;
+    public boolean visited;
     public Node(String[] words) {
         this.words = new HashSet<>();
         this.children = new ArrayList<>();
         Collections.addAll(this.words, words);
+        visited = false;
     }
     public void addChild(Node child) {
         children.add(child);

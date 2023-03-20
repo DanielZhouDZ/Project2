@@ -4,13 +4,14 @@ import ngordnet.browser.NgordnetQuery;
 import ngordnet.browser.NgordnetQueryHandler;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.Collections;
 
 public class HyponymsHandler extends NgordnetQueryHandler{
     private WordNetGraph wng;
     private WordGraph wg;
-    private List<Node> hyponymNodes;
-    private List<String> hyponyms;
     public HyponymsHandler(WordNetGraph wng) {
         this.wng = wng;
         this.wg = wng.getWordGraph();
@@ -18,38 +19,26 @@ public class HyponymsHandler extends NgordnetQueryHandler{
     @Override
     public String handle(NgordnetQuery q) {
         List<String> words = q.words();
-        String word = words.get(0);
-        hyponyms = new ArrayList<>();
-        List<Node> nodesWithWord = new ArrayList<>();
-        hyponymNodes = new ArrayList<>();
-
-        for (int i = 0; i < wg.size(); i++) {
-            if (wg.getNode(i).getWords().contains(word)) {
-                nodesWithWord.add(wg.getNode(i));
-            }
+        List<Node> nodes = wg.getNodes();
+        Set<String> output = new HashSet<>();
+        for (Node n : nodes) {
+            output.addAll(addNodes(n, words));
         }
-
-        for (Node node : nodesWithWord) {
-            addNodes(node);
-        }
-
-        for (Node node : hyponymNodes) {
-            for (String s : node.getWords()) {
-                if (!hyponyms.contains(s)) {
-                    hyponyms.add(s);
-                }
-            }
-        }
-
-        return hyponyms.toString();
+        List<String> outputWords = new ArrayList<>(output);
+        Collections.sort(outputWords);
+        return outputWords.toString();
     }
-
-    public void addNodes(Node node) {
-        hyponymNodes.add(node);
-        if (node.getChildren().size() != 0) {
-            for (Node n : node.getChildren()) {
-                addNodes(n);
-            }
+    public Set<String> addNodes(Node n, List<String> words) {
+        if (words.size() == 1 && n.contains(words.get(0))) {
+            return addNodes(n);
         }
+        return new HashSet<>();
+    }
+    public Set<String> addNodes(Node node) {
+        Set<String> output = new HashSet<>(node.getWords());
+        for (Node n : node.getChildren()) {
+            output.addAll(addNodes(n));
+        }
+        return output;
     }
 }

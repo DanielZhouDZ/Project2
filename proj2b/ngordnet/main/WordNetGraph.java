@@ -1,10 +1,6 @@
 package ngordnet.main;
 
-import java.util.Collection;
 import edu.princeton.cs.algs4.In;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.Collections;
 
 public class WordNetGraph {
     private WordGraph wg;
@@ -20,7 +16,7 @@ public class WordNetGraph {
         }
         In hypo = new In(hyponyms);
         while (hypo.hasNextLine()) {
-            String line1 = syns.readLine();
+            String line1 = hypo.readLine();
             if (line1 != null) {
                 String[] line = line1.split(",");
                 Node node = wg.getNode(Integer.parseInt(line[0]));
