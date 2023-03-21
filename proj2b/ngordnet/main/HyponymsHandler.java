@@ -7,9 +7,11 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Collections;
 
-public class HyponymsHandler extends NgordnetQueryHandler{
+public class HyponymsHandler extends NgordnetQueryHandler {
     private WordNetGraph wng;
     private WordGraph wg;
     public HyponymsHandler(WordNetGraph wng) {
@@ -20,30 +22,30 @@ public class HyponymsHandler extends NgordnetQueryHandler{
     public String handle(NgordnetQuery q) {
         List<String> words = q.words();
         Set<Integer> nodes = wg.getRoots();
-        Set<String> output = new HashSet<>();
-        for (int i : nodes) {
-            output.addAll(handleWords(i, words));
-        }
-        List<String> outputWords = new ArrayList<>(output);
-        Collections.sort(outputWords);
-        return outputWords.toString();
-    }
-    public List<String> handleWords(int index, List<String> words) {
-        if (words.size() == 1 && wg.getWords(index).contains(words.get(0))) {
-            return getAll(index);
-        }
-        List<String> newWords = new ArrayList<>();
-        for (String w : words) {
-            if (!wg.getWords(index).contains(w)) {
-                newWords.add(w);
+        List<Set<String>> outputs = new ArrayList<>();
+        Set<String> outputWords;
+        for (String word : words) {
+            outputWords = new HashSet<>();
+            outputs.add(outputWords);
+            for (int node : nodes) {
+                outputWords.addAll(handleWords(node, word));
             }
         }
-        if (newWords.size() == 0) {
+        Set<String> output = outputs.get(0);
+        for (Set<String> sets : outputs) {
+            output.retainAll(sets);
+        }
+        List<String> finalOutput = new ArrayList<>(output);
+        Collections.sort(finalOutput);
+        return finalOutput.toString();
+    }
+    public List<String> handleWords(int index, String word) {
+        if (wg.getWords(index).contains(word)) {
             return getAll(index);
         }
         List<String> output = new ArrayList<>();
         for (int i : wg.getEdges(index)) {
-            output.addAll(handleWords(i, newWords));
+            output.addAll(handleWords(i, word));
         }
         return output;
     }

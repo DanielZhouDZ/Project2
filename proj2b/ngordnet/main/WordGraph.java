@@ -28,8 +28,14 @@ public class WordGraph {
     public List<String> getWords(int index) {
         return words.get(index);
     }
+    public List<List<String>> getWords() {
+        return words;
+    }
     public List<Integer> getEdges(int index) {
         return adjacencyList.get(index);
+    }
+    public List<List<Integer>> getEdges() {
+        return adjacencyList;
     }
     public Set<Integer> getRoots() {
         return roots;
