@@ -4,9 +4,15 @@ import ngordnet.browser.NgordnetQuery;
 import ngordnet.browser.NgordnetQueryHandler;
 import ngordnet.ngrams.NGramMap;
 import ngordnet.ngrams.TimeSeries;
-import org.antlr.v4.runtime.tree.Tree;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.PriorityQueue;
+
+
 
 public class HyponymsHandler extends NgordnetQueryHandler {
     private WordNetGraph wng;
@@ -60,7 +66,10 @@ public class HyponymsHandler extends NgordnetQueryHandler {
 
             }
             for (int i = 0; i < k; i++) {
-                kOutput.add(pq.poll().word);
+                Pairing p = pq.poll();
+                if (p != null) {
+                    kOutput.add(p.word);
+                }
             }
 
             Collections.sort(kOutput);
